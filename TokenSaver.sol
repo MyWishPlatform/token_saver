@@ -50,12 +50,10 @@ contract TokenSaver {
         require(_tokenAddress != address(0));
         require(tokenType.length <= 30);
 
-        if (tokenType.length > 0) {
-            for (uint x = 0; x < tokenType.length ; x++ ) {
-                require(tokenType[x] != _tokenAddress);
-            }
+        for (uint x = 0; x < tokenType.length ; x++ ) {
+            require(tokenType[x] != _tokenAddress);
         }
-
+     
         tokenType.push(_tokenAddress);
         emit TokensToSave(_tokenAddress);
         return true;
