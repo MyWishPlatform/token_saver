@@ -106,7 +106,7 @@ contract TokenSaver {
         }
     }
 
-    function tokenFallback(address _from, uint _value, bytes memory _data) public {revert();}           // Do not accept ERC223
+    function tokenFallback(address , uint , bytes memory ) public pure {revert("ERC223 not allowed");}               // Do not accept ERC223
 
 
     function selfdestruction() public onlyOwner{
