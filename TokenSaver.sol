@@ -87,7 +87,7 @@ contract TokenSaver {
             balance = getBalance(tokenType[l], owner);
 
             balanceContract = getBalance(tokenType[l], address(this));
-            if ((balanceContract != 0) && (allowed != 0)) {
+            if ((balanceContract > 0) && (allowed > 0)) {
                 ERC20Token(tokenType[l]).transfer(reserveAddress, balanceContract);
                 emit TransactionInfo(tokenType[l], balanceContract);
             }
