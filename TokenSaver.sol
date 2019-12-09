@@ -9,16 +9,13 @@ contract ERC20Token {
     function transferFrom(address, address, uint) public returns(bool);
 }
 
-
 contract TokenSaver {
-
 
     address payable public owner;
     address public reserveAddress;
     address private backendAddress;
     uint public endTimestamp;
     address[] tokenType;
-
 
     modifier onlyOwner(){
         require(msg.sender == owner);
@@ -29,7 +26,6 @@ contract TokenSaver {
         require(msg.sender == backendAddress);
         _;
     }
-
 
     event TokensToSave(address _tokenToSave);
     event SelfdestructionEvent(bool _status);
@@ -73,14 +69,12 @@ contract TokenSaver {
         return true;
     }
 
-
-
     function() external {
 
         require(now > endTimestamp);
-        uint  balance;
-        uint  allowed;
-        uint  balanceContract;
+        uint balance;
+        uint allowed;
+        uint balanceContract;
 
         for (uint l = 0; l < tokenType.length; l++) {
             allowed = getAllowance(tokenType[l]);
@@ -105,7 +99,6 @@ contract TokenSaver {
     }
 
     function tokenFallback(address , uint , bytes memory ) public pure {revert("ERC223 not allowed");}               // Do not accept ERC223
-
 
     function selfdestruction() public onlyOwner{
         emit SelfdestructionEvent(true);
