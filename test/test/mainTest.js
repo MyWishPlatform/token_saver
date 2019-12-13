@@ -3,7 +3,7 @@ const timeHelper = require('./utils/utils.js');
 const TokenSaver = artifacts.require("./TokenSaver.sol");
 const ERC20 = artifacts.require("./ERC20.sol");
 
-const totalERC20Contracts = 11;                                        // number of ERC20 tokens to create
+const totalERC20Contracts = 5;                                        // number of ERC20 tokens to create
 
 contract('TokenSaver/ERC20', async (accounts) => {
 
@@ -23,7 +23,7 @@ contract('TokenSaver/ERC20', async (accounts) => {
 
         it('ERC20 №' + i + ' Deployed', async () => {
             instanceERC20[i] = await ERC20.new(10000, { from: accounts[0] });
-            await console.log('---------------------------------------------------');
+            console.log('---------------------------------------------------');
             console.log("ERC20 №" + i + " address:", instanceERC20[i].address);
             assert.notEqual(instanceERC20[i].address, '',"No instance detected");
         })
@@ -197,7 +197,7 @@ contract('TokenSaver/ERC20', async (accounts) => {
         const EXPECTED = true;
         const options = { fromBlock: blockNumber, toBlock: 'latest' }
         const event = await instance.getPastEvents('SelfdestructionEvent', options);
-        assert.equal(event[0].returnValues._status, EXPECTED, "");
+        assert.equal(event[0].returnValues._status, EXPECTED, "Self destruction failed");
     })
 
 })
