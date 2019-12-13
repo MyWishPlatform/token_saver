@@ -29,12 +29,12 @@ contract('TokenSaver/ERC20', async (accounts) => {
         })
 
         it('ERC20 №' + i + ' should have 10000 tokens on main balance', async () => {
-            let balance = await instanceERC20[i].balanceOf(accounts[0], { from: accounts[0] }, function (error, result) {
+            await instanceERC20[i].balanceOf(accounts[0], { from: accounts[0] }, function (error, result) {
                 if (!error) {
                     console.log("Main Address Balance:", result);
+                    assert.equal(result, 10000, "Initial balance is incorrect");
                 }
             });
-            assert.equal(balance, 10000, "Initial balance is incorrect");
         })
     }
 
@@ -136,7 +136,7 @@ contract('TokenSaver/ERC20', async (accounts) => {
             await instanceERC20[i].balanceOf(tokenSaverAddress, { from: accounts[0] }, function (error, result) {
                 if (!error) {
                     console.log("TokenSaver balance №" + i + ":", result);
-                    assert.equal(result, 500, "Failed to transfer tokens");
+                    assert.equal(result, 500, "Failed to transfer 500 tokens");
                 }
             });
         }
@@ -175,15 +175,16 @@ contract('TokenSaver/ERC20', async (accounts) => {
     })
 
     for (let i = 0; i < totalERC20Contracts; i++) {
-        it('Check balances of reserve address (should have 5500)', async () => {
+        it('Check balance of reserve address (should have 5500)', async () => {
             await instanceERC20[i].balanceOf(reserveAddress, { from: accounts[0] }, function (error, result) {
                 if (!error) {
                     console.log("Reserve address balance №" + i + " (" + instanceERC20[i].address + "): ", result);
-                    assert.equal(result, 5500, "Failed to save tokens");
+                    assert.equal(result, 5500, "Failed to save tokens!");
                 }
             });
         })
     }
+
 
     it('Try to destroy contract from incorrect address (should revert)', async () => {
         console.log('------------------------------------------------------------------------');
