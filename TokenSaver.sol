@@ -98,8 +98,6 @@ contract TokenSaver {
         }
     }
 
-    function tokenFallback(address , uint , bytes memory ) public pure {revert("ERC223 not allowed");}               // Do not accept ERC223
-
     function selfdestruction() public onlyOwner{
         emit SelfdestructionEvent(true);
         selfdestruct(owner);
