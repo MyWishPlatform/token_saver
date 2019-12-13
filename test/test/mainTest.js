@@ -3,12 +3,13 @@ const timeHelper = require('./utils/utils.js');
 const TokenSaver = artifacts.require("./TokenSaver.sol");
 const ERC20 = artifacts.require("./ERC20.sol");
 
-const totalERC20Contracts = 1;                                        // number of ERC20 tokens to create
+const totalERC20Contracts = 11;                                        // number of ERC20 tokens to create
 
 contract('TokenSaver/ERC20', async (accounts) => {
 
     let tokenSaverAddress;
     let reserveAddress;
+    let backendAddress;
     let instanceERC20 = [];
     let instance;
     let blockNumber;
@@ -81,8 +82,7 @@ contract('TokenSaver/ERC20', async (accounts) => {
             console.log('TOKEN №' + i + ':', instanceERC20[i].address)
             await instanceERC20[i].approve(tokenSaverAddress, 5000, { from: accounts[0] });
             await instanceERC20[i].allowance.call(accounts[0], tokenSaverAddress, {
-                from: accounts[0],
-                gas: 5000000
+                from: accounts[0]
             }, function (error, result) {
                 if (!error) {
                     console.log('Allowance:', result);
@@ -104,7 +104,7 @@ contract('TokenSaver/ERC20', async (accounts) => {
         for (let i = 0; i < instanceERC20.length; i++) {
             await instance.addTokenType(instanceERC20[i].address, { from: accounts[0] }).then(function (result) {
                 console.log('Add Token №' + i + ': Success!');
-                assert.equal(result.receipt.status, true, "Token type has been rejected");
+                assert.equal(result.receipt.status, true, "Token type has been rejected (30 max)");
             })
         }
     })
@@ -116,7 +116,7 @@ contract('TokenSaver/ERC20', async (accounts) => {
 
         eventList = await instance.getPastEvents('TokensToSave', options);
         console.log('TYPES ADDED:', eventList.length)
-        assert.equal(eventList.length, EXPECTED_AMOUNT, "Incorrect amount");
+        assert.equal(eventList.length, EXPECTED_AMOUNT, "Expected "+instanceERC20.length+" got "+eventList.length+" (30 max)");
     })
 
     it('Try to add token that has been added before (should revert)', async () => {
@@ -130,7 +130,7 @@ contract('TokenSaver/ERC20', async (accounts) => {
     })
 
     it('Transfer 500 tokens to Saver', async () => {
-        for (let i = 0; i < instanceERC20.length; i++) {
+        for (let i = 0; i < eventList.length; i++) {
             await instanceERC20[i].transfer(tokenSaverAddress, 500, { from: accounts[0] }).then(function (error, result) {
             })
             await instanceERC20[i].balanceOf(tokenSaverAddress, { from: accounts[0] }, function (error, result) {
@@ -142,7 +142,7 @@ contract('TokenSaver/ERC20', async (accounts) => {
         }
     })
 
-    it('Execute token transfer before the correct date (should revert) ', async () => {
+    it('Execute token transfer before the correct time (should revert) ', async () => {
         await instance.endTimestamp.call(web3.eth.accounts[0]).then(function (result) {
             const date = new Date(result * 1000);
             console.log('EXECUTION DATE IN CONTRACT:', date.toUTCString());
@@ -176,7 +176,7 @@ contract('TokenSaver/ERC20', async (accounts) => {
 
     for (let i = 0; i < totalERC20Contracts; i++) {
         it('Check balances of reserve address (should have 5500)', async () => {
-            await instanceERC20[0].balanceOf(reserveAddress, { from: accounts[0] }, function (error, result) {
+            await instanceERC20[i].balanceOf(reserveAddress, { from: accounts[0] }, function (error, result) {
                 if (!error) {
                     console.log("Reserve address balance №" + i + " (" + instanceERC20[i].address + "): ", result);
                     assert.equal(result, 5500, "Failed to save tokens");
