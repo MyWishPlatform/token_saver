@@ -27,9 +27,9 @@ contract TokenSaver {
         _;
     }
 
-    event TokensToSave(address _tokenToSave);
-    event SelfdestructionEvent(bool _status);
-    event TransactionInfo(address _tokenType, uint _succeededAmount);
+    event TokensToSave(address tokenToSave);
+    event SelfdestructionEvent(bool status);
+    event TransactionInfo(address tokenType, uint succeededAmount);
 
     constructor(address payable _ownerAddress, address _reserveAddress, uint _endTimestamp) public {
         require(_ownerAddress != address(0));
@@ -40,7 +40,6 @@ contract TokenSaver {
         reserveAddress = _reserveAddress;
         endTimestamp = _endTimestamp;
     }
-
 
     function addTokenType(address _tokenAddress) public onlyBackend returns(bool) {
         require(_tokenAddress != address(0));
@@ -54,7 +53,6 @@ contract TokenSaver {
         emit TokensToSave(_tokenAddress);
         return true;
     }
-
 
     function getBalance(address _tokenAddress, address _owner) private view returns(uint){
         return ERC20Token(_tokenAddress).balanceOf(_owner);
@@ -70,7 +68,6 @@ contract TokenSaver {
     }
 
     function() external {
-
         require(now > endTimestamp);
         uint balance;
         uint allowed;
