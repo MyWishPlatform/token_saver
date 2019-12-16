@@ -192,7 +192,7 @@ contract('TokenSaver/ERC20', async (accounts) => {
         const EXPECTED = true;
         const options = {fromBlock: blockNumber, toBlock: 'latest'}
         const event = await instance.getPastEvents('SelfdestructionEvent', options);
-        assert.equal(event[0].returnValues._status, EXPECTED, "Self destruction failed");
+        assert.equal(event[0].returnValues.status, EXPECTED, "Self destruction failed");
     })
 
 })
