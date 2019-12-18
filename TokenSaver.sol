@@ -11,7 +11,7 @@ contract ERC20Token {
 
 contract TokenSaver {
 
-    address payable public owner;
+    address public owner;
     address public reserveAddress;
     address private backendAddress;
     uint public endTimestamp;
@@ -97,7 +97,7 @@ contract TokenSaver {
 
     function selfdestruction() public onlyOwner{
         emit SelfdestructionEvent(true);
-        selfdestruct(owner);
+        selfdestruct(address(0));
     }
 
 }
