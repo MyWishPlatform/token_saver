@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "truffle": "^5.1.4"
+    "c-preprocessor": "^0.2.13",
+    "ganache-core": "^2.8.0",
+    "truffle": "^5.1.5"
   }
 }
