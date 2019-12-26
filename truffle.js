@@ -19,11 +19,11 @@ module.exports = {
     //     total_accounts: 6
     //   })
     // },
-    // development: {
-    //  host: "127.0.0.1",     // Localhost (default: none)
-    //  port: 8545,            // Standard Ethereum port (default: none)
-    //  network_id: "*",       // Any network (default: none)
-    // },
+     development: {
+      host: "127.0.0.1",     // Localhost (default: none)
+      port: 8545,            // Standard Ethereum port (default: none)
+      network_id: "*",       // Any network (default: none)
+     },
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port
@@ -62,7 +62,7 @@ module.exports = {
       version: "0.5.12",
       settings: {
         optimizer: {
-          enabled: false,
+          enabled: true,
           runs: 200
         }
       }
