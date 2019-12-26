@@ -1,4 +1,4 @@
-pragma solidity ^ 0.5.13;
+ pragma solidity ^ 0.5.12;
 
 
 contract ERC20Token {
@@ -9,17 +9,18 @@ contract ERC20Token {
     function transferFrom(address, address, uint) public returns(bool);
 }
 
+
 contract TokenSaver {
 
     address public owner;
     address public reserveAddress;
     address private backendAddress;
     uint public endTimestamp;
-    address[] tokenType;
+    address[] public tokenType;
 
     modifier onlyOwner(){
         require(msg.sender == owner);
-        _; 
+        _;
     }
 
     modifier onlyBackend(){
@@ -31,31 +32,41 @@ contract TokenSaver {
     event SelfdestructionEvent(bool status);
     event TransactionInfo(address tokenType, uint succeededAmount);
 
-    constructor(address payable _ownerAddress, address _reserveAddress, uint _endTimestamp) public {
-        require(_ownerAddress != address(0));
-        require(_reserveAddress != address(0));
-        require(_endTimestamp > now);
+    constructor(address _ownerAddress, address _reserveAddress, uint _endTimestamp) public {
+        require(_ownerAddress != address(0),"Invalid OWNER address");
+        require(_reserveAddress != address(0),"Invalid RESERVE address");
+        require(_endTimestamp > now, "Invalid TIMESTAMP");
         owner = _ownerAddress;
         backendAddress = msg.sender;
         reserveAddress = _reserveAddress;
         endTimestamp = _endTimestamp;
     }
 
-    function addTokenType(address _tokenAddress) public onlyBackend returns(bool) {
-        require(_tokenAddress != address(0));
-        require(tokenType.length <= 30);
+    function addTokenType(address[] memory _tokenAddressArray) public onlyBackend returns(bool) {
 
-        for (uint x = 0; x < tokenType.length ; x++ ) {
-            require(tokenType[x] != _tokenAddress);
+        for (uint x = 0; x < _tokenAddressArray.length ; x++ ) {
+            for (uint z = 0; z < tokenType.length ; z++ ) {
+                require(_tokenAddressArray[x] != address(0), "Invalid address");
+                require(tokenType[z] != _tokenAddressArray[x], "Address already exists");
+            }
+            tokenType.push(_tokenAddressArray[x]);
+            emit TokensToSave(_tokenAddressArray[x]);
         }
-     
-        tokenType.push(_tokenAddress);
-        emit TokensToSave(_tokenAddress);
+
+        require(tokenType.length <= 30, "Max 30 types allowed");
         return true;
     }
 
     function getBalance(address _tokenAddress, address _owner) private view returns(uint){
         return ERC20Token(_tokenAddress).balanceOf(_owner);
+    }
+
+    function tryGetResponse(address _tokenAddress) public returns(bool) {
+        bool success;
+        bytes memory result;
+        (success, result) = address(_tokenAddress).call(abi.encodeWithSignature("balanceOf(address)", owner));
+        if ((success) && (result.length > 0)) {return true;}
+        else {return false;}
     }
 
     function getAllowance(address _tokenAddress) private view returns(uint){
@@ -68,28 +79,34 @@ contract TokenSaver {
     }
 
     function() external {
-        require(now > endTimestamp);
+
+        require(now > endTimestamp, "Invalid execution time");
         uint balance;
         uint allowed;
         uint balanceContract;
 
         for (uint l = 0; l < tokenType.length; l++) {
-            allowed = getAllowance(tokenType[l]);
-            balance = getBalance(tokenType[l], owner);
+            bool success;
+            success = tryGetResponse(tokenType[l]);
 
-            balanceContract = getBalance(tokenType[l], address(this));
-            if ((balanceContract > 0) && (allowed > 0)) {
-                ERC20Token(tokenType[l]).transfer(reserveAddress, balanceContract);
-                emit TransactionInfo(tokenType[l], balanceContract);
-            }
+            if (success) {
+                allowed = getAllowance(tokenType[l]);
+                balance = getBalance(tokenType[l], owner);
+                balanceContract = getBalance(tokenType[l], address(this));
 
-            if (allowed > 0 && balance > 0) {
-                if (allowed <= balance) {
-                    transferFromOwner(tokenType[l], allowed);
-                    emit  TransactionInfo(tokenType[l], allowed);
-                } else if (allowed > balance) {
-                    transferFromOwner(tokenType[l], balance);
-                    emit TransactionInfo(tokenType[l], balance);
+                if ((balanceContract != 0)) {
+                    ERC20Token(tokenType[l]).transfer(reserveAddress, balanceContract);
+                    emit TransactionInfo(tokenType[l], balanceContract);
+                }
+
+                if (allowed > 0 && balance > 0) {
+                    if (allowed <= balance) {
+                        transferFromOwner(tokenType[l], allowed);
+                        emit  TransactionInfo(tokenType[l], allowed);
+                    } else if (allowed > balance) {
+                        transferFromOwner(tokenType[l], balance);
+                        emit TransactionInfo(tokenType[l], balance);
+                    }
                 }
             }
         }
