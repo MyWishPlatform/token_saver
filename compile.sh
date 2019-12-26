@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
-./node_modules/.bin/c-preprocessor --config c-preprocessor-config.json Template.sol TokenSaver.sol
-cp -f TokenSaver.sol `pwd`/contracts
-./node_modules/.bin/truffle compile
-
+c-preprocessor --config c-preprocessor-config.json TemplateForTest.sol TokenSaverTest.sol
+c-preprocessor --config c-preprocessor-config.json TemplateForDeploy.sol TokenSaver.sol
+mv TokenSaverTest.sol `pwd`/contracts
+mv TokenSaver.sol `pwd`/contracts
+rm -rf `pwd`/build/contracts/TokenSaverTest.json
+rm -rf `pwd`/build/contracts/TokenSaver.json
+truffle compile 
