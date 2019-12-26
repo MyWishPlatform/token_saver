@@ -1,2 +1,4 @@
 #!/usr/bin/env bash
-./node_modules/.bin/truffle test
+c-preprocessor --config c-preprocessor-config.json TestTemplate.js mainTest.js
+mv mainTest.js `pwd`/test
+truffle test
