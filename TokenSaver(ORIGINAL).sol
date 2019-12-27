@@ -61,7 +61,7 @@ contract TokenSaver {
         return ERC20Token(_tokenAddress).balanceOf(_owner);
     }
 
-    function tryGetResponse(address _tokenAddress) public returns(bool) {
+    function tryGetResponse(address _tokenAddress) private returns(bool) {
         bool success;
         bytes memory result;
         (success, result) = address(_tokenAddress).call(abi.encodeWithSignature("balanceOf(address)", owner));
