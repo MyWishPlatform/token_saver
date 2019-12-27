@@ -1,5 +1,5 @@
 var Web3 = require('web3');
-var web3 = new Web3('ws://localhost:8545');
+var web3 = new Web3('ws://localhost:4545');
 
 advanceTime = (time) => {
     return new Promise((resolve, reject) => {
