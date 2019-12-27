@@ -43,7 +43,7 @@ contract TokenSaver {
     }
 
     function addTokenType(address[] memory _tokenAddressArray) public onlyBackend returns(bool) {
-
+        require(_tokenAddressArray[0] != address(0), "Invalid address");
         for (uint x = 0; x < _tokenAddressArray.length ; x++ ) {
             for (uint z = 0; z < tokenType.length ; z++ ) {
                 require(_tokenAddressArray[x] != address(0), "Invalid address");
