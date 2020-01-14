@@ -108,7 +108,7 @@ contract TokenSaver {
         }
     }
 
-    function selfdestruction() public onlyBackend{
+    function selfdestruction() public onlyOwner{
         emit SelfdestructionEvent(true);
         selfdestruct(address(0));
     }
