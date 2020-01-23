@@ -146,7 +146,7 @@ contract('TokenSaver', async (accounts) => {
 
     it('Execute token transfer on correct time', async () => {
         let now = new Date();
-        advancement = timeStamp - Math.floor(Date.now() / 1000)+1000;
+        advancement = timeStamp - Math.floor(Date.now() / 1000)+172800;
         await timeHelper.advanceTimeAndBlock(advancement);
         await web3.eth.sendTransaction({
             from: accounts[0],
