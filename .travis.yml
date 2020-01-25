@@ -7,7 +7,8 @@ install:
 
 script:
   - npm i
-  - ganache-cli -p 4545
+  - ganache-cli -p 4545 > /dev/null &
+  - sleep 5
   - npm run test
   - npm run coverage
   - codecov
