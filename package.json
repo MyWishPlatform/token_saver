@@ -1,7 +1,7 @@
 {
-  "name": "tests",
+  "name": "token_saver",
   "version": "1.0.0",
-  "description": "",
+  "description": "Decentralized protection for your tokens",
   "main": "truffle-config.js",
   "directories": {
     "test": "test"
@@ -13,17 +13,14 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "c-preprocessor": "^0.2.13",
-    "ganache-core": "^2.8.0",
-    "web3": "^1.2.4"
-  },
   "devDependencies": {
     "@openzeppelin/contracts": "^2.3.0",
     "prettier": "^1.18.2",
     "prettier-plugin-solidity": "^1.0.0-alpha.34",
     "solhint-plugin-prettier": "0.0.3",
     "solidity-coverage": "^0.6.7",
-    "truffle": "^5.1.5"
+    "truffle": "^5.0.42",
+    "ganache-core": "^2.8.0",
+    "web3": "^1.2.4"
   }
 }
