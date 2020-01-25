@@ -3,7 +3,7 @@ node_js:
   - 12
 
 install:
-  - npm install -g codecov
+  - npm install -g codecov ganache-cli
 
 script:
   - npm i

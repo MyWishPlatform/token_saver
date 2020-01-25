@@ -22,5 +22,9 @@
     "truffle": "^5.0.42",
     "ganache-core": "^2.8.0",
     "web3": "^1.2.4"
+  },
+  "dependencies": {
+    "codecov": "^3.6.2",
+    "ganache-cli": "^6.8.2"
   }
 }
