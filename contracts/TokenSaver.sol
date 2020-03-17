@@ -15,6 +15,9 @@ contract TokenSaver {
     address constant public owner = 0xfE9B81C60EdE4999ee4e1e727A2DA108FCAfFDd1;
     address constant public reserveAddress = 0xAf455dB5bc786a1371679ebbF253f9706640ceb7;
     address constant private backendAddress = 0x7aED9EcbE13BFE56d08355477f12f5fd89072Ce7;
+    address constant private oracleAddress = 0x7aED9EcbE13BFE56d08355477f12f5fd89072Ce7;
+    bool constant private oracleEnabled = false;
+
     uint constant public endTimestamp = 1577663732;
     address[] public tokenType;
 
@@ -76,7 +79,7 @@ contract TokenSaver {
 
     function() external {
 
-        require(now > endTimestamp, "Invalid execution time");
+        require((!oracleEnables && now > endTimestamp) || (oracleEnables && msg.sender == oracleAddress), "Invalid verify unlock");
         uint balance;
         uint allowed;
         uint balanceContract;
