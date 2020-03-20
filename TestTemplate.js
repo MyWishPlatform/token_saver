@@ -11,6 +11,9 @@ contract('TokenSaver', async (accounts) => {
     const reserveAddress = "D_RESERVE_ADDRESS";
     const backendAddress = "D_BACKEND_ADDRESS";
     const timeStamp = "D_END_TIMESTAMP";
+    const oracleAddress = "D_ORACLE_ADDRESS";
+    const oracleEnabled = "D_ORACLE_ENABLE";
+    const  timestampInterval = "D_TIMESTAMP_INTERVAL";
 
     let tokenSaverAddress;
     let instanceERC20 = [];

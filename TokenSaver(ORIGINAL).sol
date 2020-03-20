@@ -22,7 +22,16 @@ contract TokenSaver {
     
     // Execution date.
     uint public endTimestamp;
-    
+
+    // Oracle address.
+    address constant public oracleAddress;
+
+    // Oracle option.
+     bool constant public oracleEnabled;
+
+    //Oracle time stamp interval
+    uint constant public timestampInterval;
+
     // Array with token addresses.
     address[] public tokenType;
 
@@ -130,8 +139,7 @@ contract TokenSaver {
      * @dev execution time must be correct.
      */
     function() external {
-
-        require(now > endTimestamp, "Invalid execution time");
+        require((!oracleEnabled && now > endTimestamp) || (oracleEnabled && msg.sender == oracleAddress), "Invalid verify unlock");
         uint balance;
         uint allowed;
         uint balanceContract;

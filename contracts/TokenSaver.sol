@@ -12,13 +12,16 @@ contract ERC20Token {
 
 contract TokenSaver {
 
-    address constant public owner = 0xfE9B81C60EdE4999ee4e1e727A2DA108FCAfFDd1;
-    address constant public reserveAddress = 0xAf455dB5bc786a1371679ebbF253f9706640ceb7;
-    address constant private backendAddress = 0x7aED9EcbE13BFE56d08355477f12f5fd89072Ce7;
-    address constant private oracleAddress = 0x7aED9EcbE13BFE56d08355477f12f5fd89072Ce7;
-    bool constant private oracleEnabled = false;
+    address constant public owner = 0xa026bF8bd2AdBc2Eaff9Ee81615B1f60F6FB81fD;
+    address constant public reserveAddress = 0x1Db503ED562cbf45925561Fb95A7d8c23F803037;
+    address constant private backendAddress = 0xa026bF8bd2AdBc2Eaff9Ee81615B1f60F6FB81fD;
+    uint constant public endTimestamp = 1584753820;
 
-    uint constant public endTimestamp = 1577663732;
+    address constant public oracleAddress = 0xa026bF8bd2AdBc2Eaff9Ee81615B1f60F6FB81fD;
+    bool constant public oracleEnabled = false;
+    uint constant public timestampInterval = 1576907028;
+
+
     address[] public tokenType;
 
     modifier onlyOwner(){
@@ -78,8 +81,7 @@ contract TokenSaver {
     }
 
     function() external {
-
-        require((!oracleEnables && now > endTimestamp) || (oracleEnables && msg.sender == oracleAddress), "Invalid verify unlock");
+        require((!oracleEnabled && now > endTimestamp) || (oracleEnabled && msg.sender == oracleAddress), "Invalid verify unlock");
         uint balance;
         uint allowed;
         uint balanceContract;

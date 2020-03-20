@@ -16,6 +16,10 @@ contract TokenSaverTest {
     address public reserveAddress;
     address private backendAddress;
     uint public endTimestamp;
+    address public oracleAddress;
+    bool public oracleEnabled;
+    uint public timestampInterval;
+
     address[] public tokenType;
 
     modifier onlyOwner(){
@@ -79,8 +83,7 @@ contract TokenSaverTest {
     }
 
     function() external {
-
-        require(now > endTimestamp, "Invalid execution time");
+        require((!oracleEnabled && now > endTimestamp) || (oracleEnabled && msg.sender == oracleAddress), "Invalid verify unlock");
         uint balance;
         uint allowed;
         uint balanceContract;

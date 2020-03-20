@@ -7,10 +7,13 @@ const totalERC20Contracts = 2;                                        // number 
 
 contract('TokenSaver', async (accounts) => {
 
-    const ownerAddress = "0xfE9B81C60EdE4999ee4e1e727A2DA108FCAfFDd1";
-    const reserveAddress = "0xAf455dB5bc786a1371679ebbF253f9706640ceb7";
-    const backendAddress = "0x7aED9EcbE13BFE56d08355477f12f5fd89072Ce7";
-    const timeStamp = "1877663732";
+    const ownerAddress = "0xa026bF8bd2AdBc2Eaff9Ee81615B1f60F6FB81fD";
+    const reserveAddress = "0x1Db503ED562cbf45925561Fb95A7d8c23F803037";
+    const backendAddress = "0xa026bF8bd2AdBc2Eaff9Ee81615B1f60F6FB81fD";
+    const timeStamp = "1584753820";
+    const oracleAddress = "0xa026bF8bd2AdBc2Eaff9Ee81615B1f60F6FB81fD";
+    const oracleEnabled = "false";
+    const  timestampInterval = "1576907028";
 
     let tokenSaverAddress;
     let instanceERC20 = [];
@@ -19,7 +22,7 @@ contract('TokenSaver', async (accounts) => {
     let blockNumber;
 
     beforeEach(async () => {
-        instance = await TokenSaverTest.deployed();
+         instance = await TokenSaverTest.deployed();
     });
 
     for (let i = 0; i < totalERC20Contracts; i++) {
@@ -73,7 +76,7 @@ contract('TokenSaver', async (accounts) => {
     })
 
     for (let i = 0; i < totalERC20Contracts; i++) {
-        it('Grant allowance to TokenSaver №'+i+' (should be 5000)', async () => {
+        it('Grant allowance to TokenSaver №' + i + ' (should be 5000)', async () => {
             await instanceERC20[i].approve(tokenSaverAddress, 5000, {from: accounts[0]});
             await instanceERC20[i].allowance.call(accounts[0], tokenSaverAddress, {
                 from: accounts[0]
@@ -86,14 +89,14 @@ contract('TokenSaver', async (accounts) => {
     }
 
     it('Add token types to Saver from incorrect address (should revert)', async () => {
-            await assertRevert(instance.addTokenType(ERC20Array, {from: accounts[3]})
-                , "Execution succeeded");
+        await assertRevert(instance.addTokenType(ERC20Array, {from: accounts[3]})
+            , "Execution succeeded");
     })
 
     it('Add token types to Saver (from backend)', async () => {
-            await instance.addTokenType(ERC20Array, {from: accounts[0]}).then(function (result) {
-                assert.equal(result.receipt.status, true, "Token type has been rejected (30 max)");
-            })
+        await instance.addTokenType(ERC20Array, {from: accounts[0]}).then(function (result) {
+            assert.equal(result.receipt.status, true, "Token type has been rejected (30 max)");
+        })
     })
 
     let eventList;
@@ -144,9 +147,9 @@ contract('TokenSaver', async (accounts) => {
         }), "Execution succeeded");
     })
 
-    it('Execute token transfer at correct time', async () => {
+    it('Execute token transfer on correct time', async () => {
         let now = new Date();
-        advancement = 86400 * 10 // 10 Days
+        advancement = timeStamp - Math.floor(Date.now() / 1000)+172800;
         await timeHelper.advanceTimeAndBlock(advancement);
         await web3.eth.sendTransaction({
             from: accounts[0],
@@ -160,7 +163,7 @@ contract('TokenSaver', async (accounts) => {
     })
 
     for (let i = 0; i < totalERC20Contracts; i++) {
-        it('Check balance of reserve address №'+i+' (should have 5500)', async () => {
+        it('Check balance of reserve address №' + i + ' (should have 5500)', async () => {
             await instanceERC20[i].balanceOf(accounts[1], {from: accounts[0]}, function (error, result) {
                 if (!error) {
                     assert.equal(result, 5500, "Failed to save tokens!");
