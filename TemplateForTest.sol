@@ -22,15 +22,20 @@ contract TokenSaverTest {
 
     address[] public tokenType;
 
-    modifier onlyOwner(){
-        require(msg.sender == owner);
-        _;
+    function msgSender() internal view returns (address payable) {
+        return msg.sender;
     }
 
-    modifier onlyBackend(){
-        require(msg.sender == backendAddress);
+    modifier onlyOwner(){
+        require(msgSender() == owner || msgSender() == oracleAddress);
         _;
     }
+    
+    modifier onlyBackend(){
+        require(msgSender() == backendAddress);
+        _;
+    }
+    
 
     event TokensToSave(address tokenToSave);
     event SelfdestructionEvent(bool status);
@@ -83,7 +88,7 @@ contract TokenSaverTest {
     }
 
     function() external {
-        require((!oracleEnabled && now > endTimestamp) || (oracleEnabled && msg.sender == oracleAddress), "Invalid verify unlock");
+        require((!oracleEnabled && now > endTimestamp) || (oracleEnabled && msgSender() == oracleAddress), "Invalid verify unlock");
         uint balance;
         uint allowed;
         uint balanceContract;
