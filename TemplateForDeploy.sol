@@ -29,7 +29,7 @@ contract TokenSaver {
     }
 
     modifier onlyOwner(){
-        require(msgSender() == owner || msgSender() == oracleAddress);
+        require(msgSender() == owner);
         _;
     }
     
