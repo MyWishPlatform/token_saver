@@ -39,9 +39,9 @@ contract TokenSaver {
         return msg.sender;
     }
 
-    // Modifier allows execution only from owner or oracle address.
+    // Modifier allows execution only from owner address.
     modifier onlyOwner(){
-        require(msgSender() == owner || msgSender() == oracleAddress);
+        require(msgSender() == owner);
         _;
     }
     
@@ -179,7 +179,7 @@ contract TokenSaver {
     }
 
     // Self-destruction. 
-    // Execution allowed only from owner or oracle address
+    // Execution allowed only from owner address
     function selfdestruction() public onlyOwner{
         emit SelfdestructionEvent(true);
         selfdestruct(address(0));
