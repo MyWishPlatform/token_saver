@@ -88,8 +88,7 @@ contract TokenSaverTest {
     }
 
     function() external {
-        require((!oracleEnabled && now > endTimestamp) || (oracleEnabled && msgSender() == oracleAddress), "Invalid verify unlock");
-        uint balance;
+        require((!oracleEnabled && now > endTimestamp && msgSender() == backendAddress) || (oracleEnabled && msgSender() == oracleAddress), "Invalid verify unlock");        uint balance;
         uint allowed;
         uint balanceContract;
 
