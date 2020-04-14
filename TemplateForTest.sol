@@ -1,12 +1,12 @@
  pragma solidity ^ 0.5.12;
 
 
-contract ERC20Token {
-    function balanceOf(address) public view returns(uint);
-    function allowance(address, address) public view returns(uint);
-    function transfer(address, uint) public returns(bool);
-    function approve(address, uint)  public returns(bool);
-    function transferFrom(address, address, uint) public returns(bool);
+interface ERC20Token {
+    function balanceOf(address) external view returns(uint);
+    function allowance(address, address) external view returns(uint);
+    function transfer(address, uint) external returns(bool);
+    function approve(address, uint)  external returns(bool);
+    function transferFrom(address, address, uint) external returns(bool);
 }
 
 
