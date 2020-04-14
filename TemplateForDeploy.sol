@@ -1,14 +1,12 @@
  pragma solidity ^ 0.5.12;
 
-
-contract ERC20Token {
-    function balanceOf(address) public view returns(uint);
-    function allowance(address, address) public view returns(uint);
-    function transfer(address, uint) public returns(bool);
-    function approve(address, uint)  public returns(bool);
-    function transferFrom(address, address, uint) public returns(bool);
+interface ERC20Token {
+    function balanceOf(address) external view returns(uint);
+    function allowance(address, address) external view returns(uint);
+    function transfer(address, uint) external returns(bool);
+    function approve(address, uint)  external returns(bool);
+    function transferFrom(address, address, uint) external returns(bool);
 }
-
 
 contract TokenSaver {
 
@@ -16,11 +14,8 @@ contract TokenSaver {
     address constant public reserveAddress = D_RESERVE_ADDRESS;
     address constant private backendAddress = D_BACKEND_ADDRESS;
     uint constant public endTimestamp = D_END_TIMESTAMP;
-
     address constant public oracleAddress = D_ORACLE_ADDRESS;
     bool constant public oracleEnabled = D_ORACLE_ENABLE;
-    uint constant public timestampInterval = D_TIMESTAMP_INTERVAL;
-
 
     address[] public tokenType;
 
@@ -45,6 +40,7 @@ contract TokenSaver {
     constructor() public {
         require(owner != address(0),"Invalid OWNER address");
         require(reserveAddress != address(0),"Invalid RESERVE address");
+        require(oracleAddress != address(0),"Invalid ORACLE address");
         require(endTimestamp > now, "Invalid TIMESTAMP");
     }
 
