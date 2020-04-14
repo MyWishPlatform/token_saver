@@ -17,8 +17,7 @@ const getAccount = async (i) => {
 
 module.exports = async function (deployer) {
     deployer.deploy(TokenSaverTest, getAccount(0), getAccount(1),
-        Math.floor(Date.now() / 1000) + 150000);                         // Data shift
-    console.log('TIME NOW:', now = new Date());
+        Math.floor(Date.now() / 1000) + 150000, getAccount(6), false);   // Data shift (+150000)
     deployer.deploy(ERC20, 10000);
 };
 
