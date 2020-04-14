@@ -22,7 +22,7 @@ contract('TokenSaver', async (accounts) => {
     let blockNumber;
 
     beforeEach(async () => {
-         instance = await TokenSaverTest.deployed();
+        instance = await TokenSaverTest.deployed();
     });
 
     for (let i = 0; i < totalERC20Contracts; i++) {
@@ -45,11 +45,15 @@ contract('TokenSaver', async (accounts) => {
 
     it('TokenSaver deployed', async () => {
         tokenSaverAddress = TokenSaverTest.address;
+        instanceOracle = await TokenSaverTest.new(accounts[0], accounts[8], Math.floor(Date.now() / 1000) + 150000, accounts[6], true, {from: accounts[0]});
+        tokenSaverAddressOracle = instanceOracle.address;
         blockNumber = await web3.eth.getBlockNumber();
         web3.eth.getBlock(blockNumber, (error, block) => {
             const date = new Date(block.timestamp * 1000);
         });
         assert.notEqual(instance.address, '', "Deployment error");
+        assert.notEqual(instanceOracle.address, '', "Deployment error");
+
     })
 
     it('Valid timestamp', async () => {
@@ -85,6 +89,14 @@ contract('TokenSaver', async (accounts) => {
                     assert(result > 0, "Not approved");
                 }
             })
+            await instanceERC20[i].approve(tokenSaverAddressOracle, 5000, {from: accounts[0]});
+            await instanceERC20[i].allowance.call(accounts[0], tokenSaverAddressOracle, {
+                from: accounts[0]
+            }, function (error, result) {
+                if (!error) {
+                    assert(result > 0, "Not approved");
+                }
+            })
         })
     }
 
@@ -95,6 +107,9 @@ contract('TokenSaver', async (accounts) => {
 
     it('Add token types to Saver (from backend)', async () => {
         await instance.addTokenType(ERC20Array, {from: accounts[0]}).then(function (result) {
+            assert.equal(result.receipt.status, true, "Token type has been rejected (30 max)");
+        })
+        await instanceOracle.addTokenType(ERC20Array, {from: accounts[0]}).then(function (result) {
             assert.equal(result.receipt.status, true, "Token type has been rejected (30 max)");
         })
     })
@@ -147,13 +162,33 @@ contract('TokenSaver', async (accounts) => {
         }), "Execution succeeded");
     })
 
-    it('Execute token transfer on correct time', async () => {
+    it('Execute token transfer from a wrong address (should revert) ', async () => {
         let now = new Date();
         advancement = timeStamp - Math.floor(Date.now() / 1000)+172800;
         await timeHelper.advanceTimeAndBlock(advancement);
+        await assertRevert(web3.eth.sendTransaction({
+            from: accounts[7],
+            to: TokenSaverTest.address,
+            gas: 6000000
+        }), "Execution succeeded");
+    })
+
+    it('Execute token transfer on correct time', async () => {
         await web3.eth.sendTransaction({
             from: accounts[0],
             to: TokenSaverTest.address,
+            gas: 6000000
+        }).then(function (result) {
+            if (result) {
+                assert.notEqual(result.transactionHash, '', "Failed to save tokens");
+            }
+        });
+    })
+
+    it('Execute token transfer with oracle enabled', async () => {
+        await web3.eth.sendTransaction({
+            from: accounts[6],
+            to: instanceOracle.address,
             gas: 6000000
         }).then(function (result) {
             if (result) {
@@ -167,6 +202,16 @@ contract('TokenSaver', async (accounts) => {
             await instanceERC20[i].balanceOf(accounts[1], {from: accounts[0]}, function (error, result) {
                 if (!error) {
                     assert.equal(result, 5500, "Failed to save tokens!");
+                }
+            });
+        })
+    }
+
+    for (let i = 0; i < totalERC20Contracts; i++) {
+        it('Check balance of reserve address with oracle enabled №' + i + ' (should have 4500)', async () => {
+            await instanceERC20[i].balanceOf(accounts[8], {from: accounts[0]}, function (error, result) {
+                if (!error) {
+                    assert.equal(result, 4500, "Failed to save tokens!");
                 }
             });
         })
