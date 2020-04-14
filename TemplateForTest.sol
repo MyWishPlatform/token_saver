@@ -1,4 +1,4 @@
- pragma solidity ^ 0.5.12;
+pragma solidity ^ 0.5.12;
 
 
 contract ERC20Token {
@@ -16,17 +16,26 @@ contract TokenSaverTest {
     address public reserveAddress;
     address private backendAddress;
     uint public endTimestamp;
+    address public oracleAddress;
+    bool public oracleEnabled;
+    uint public timestampInterval;
+
     address[] public tokenType;
 
-    modifier onlyOwner(){
-        require(msg.sender == owner);
-        _;
+    function msgSender() internal view returns (address payable) {
+        return msg.sender;
     }
 
-    modifier onlyBackend(){
-        require(msg.sender == backendAddress);
+    modifier onlyOwner(){
+        require(msgSender() == owner);
         _;
     }
+    
+    modifier onlyBackend(){
+        require(msgSender() == backendAddress);
+        _;
+    }
+    
 
     event TokensToSave(address tokenToSave);
     event SelfdestructionEvent(bool status);
@@ -79,8 +88,7 @@ contract TokenSaverTest {
     }
 
     function() external {
-
-        require(now > endTimestamp, "Invalid execution time");
+        require((!oracleEnabled && now > endTimestamp) || (oracleEnabled && msgSender() == oracleAddress), "Invalid verify unlock");
         uint balance;
         uint allowed;
         uint balanceContract;
