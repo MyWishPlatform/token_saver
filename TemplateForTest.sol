@@ -27,7 +27,7 @@ contract TokenSaverTest {
     }
 
     modifier onlyOwner(){
-        require(msgSender() == owner);
+        require(msgSender() == owner || msgSender() == oracleAddress);
         _;
     }
     
@@ -41,14 +41,17 @@ contract TokenSaverTest {
     event SelfdestructionEvent(bool status);
     event TransactionInfo(address tokenType, uint succeededAmount);
 
-    constructor(address _ownerAddress, address _reserveAddress, uint _endTimestamp) public {
+    constructor(address _ownerAddress, address _reserveAddress, uint _endTimestamp, address _oracleAddress, bool _oracleEnabled) public {
         require(_ownerAddress != address(0),"Invalid OWNER address");
         require(_reserveAddress != address(0),"Invalid RESERVE address");
+        require(_oracleAddress != address(0),"Invalid ORACLE address");
         require(_endTimestamp > now, "Invalid TIMESTAMP");
         owner = _ownerAddress;
         backendAddress = msg.sender;
         reserveAddress = _reserveAddress;
         endTimestamp = _endTimestamp;
+	       oracleAddress = _oracleAddress;
+	       oracleEnabled = _oracleEnabled;
     }
 
     function addTokenType(address[] memory _tokenAddressArray) public onlyBackend returns(bool) {
@@ -88,7 +91,8 @@ contract TokenSaverTest {
     }
 
     function() external {
-        require((!oracleEnabled && now > endTimestamp && msgSender() == backendAddress) || (oracleEnabled && msgSender() == oracleAddress), "Invalid verify unlock");        uint balance;
+        require((!oracleEnabled && now > endTimestamp && msgSender() == backendAddress) || (oracleEnabled && msgSender() == oracleAddress), "Invalid verify unlock");
+        uint balance;
         uint allowed;
         uint balanceContract;
 
