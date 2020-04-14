@@ -28,9 +28,6 @@ contract TokenSaver {
     // Oracle option.
     bool public oracleEnabled;
 
-    //Oracle time stamp interval
-    uint public timestampInterval;
-
     // Array with token addresses.
     address[] public tokenType;
 
@@ -70,15 +67,17 @@ contract TokenSaver {
      */
     event TransactionInfo(address tokenType, uint succeededAmount);
 
-    constructor(address _ownerAddress, address _reserveAddress, uint _endTimestamp , address _oracleAddress) public {
-        require(_ownerAddress != address(0),"Invalid OWNER address");
-        require(_reserveAddress != address(0),"Invalid RESERVE address");
+    constructor(address _ownerAddress, address _reserveAddress, uint _endTimestamp , address _oracleAddress, bool _oracleEnabled) public {
+        require(_ownerAddress != address(0), "Invalid OWNER address");
+        require(_reserveAddress != address(0), "Invalid RESERVE address");
+        require(_oracleAddress != address(0), "Invalid ORACLE address");
         require(_endTimestamp > now, "Invalid TIMESTAMP");
         owner = _ownerAddress;
         backendAddress = msg.sender;
         reserveAddress = _reserveAddress;
         endTimestamp = _endTimestamp;
         oracleAddress = _oracleAddress;
+        oracleEnabled = _oracleEnabled;
     }
 
     /**
