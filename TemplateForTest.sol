@@ -18,7 +18,6 @@ contract TokenSaverTest {
     uint public endTimestamp;
     address public oracleAddress;
     bool public oracleEnabled;
-    uint public timestampInterval;
 
     address[] public tokenType;
 
@@ -50,8 +49,8 @@ contract TokenSaverTest {
         backendAddress = msg.sender;
         reserveAddress = _reserveAddress;
         endTimestamp = _endTimestamp;
-	       oracleAddress = _oracleAddress;
-	       oracleEnabled = _oracleEnabled;
+	oracleAddress = _oracleAddress;
+	oracleEnabled = _oracleEnabled;
     }
 
     function addTokenType(address[] memory _tokenAddressArray) public onlyBackend returns(bool) {
